@@ -100,73 +100,137 @@ export default function WineList() {
 
   const { wines: currentWines, totalPages } = getCurrentWines();
 
-  if (loading) return (
+  return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ p: 2, textAlign: 'center' }}>
-        <Typography variant="h6" color="text.secondary">
-          Cargando...
-        </Typography>
+      <Box sx={{ p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Typography variant="h4" gutterBottom>
+            Mi Colección de Vinos
+          </Typography>
+          {searchQuery && (
+            <Typography
+              variant="h6"
+              color="primary"
+              sx={{ cursor: 'pointer' }}
+              onClick={() => setSearchQuery('')}
+            >
+              Limpiar búsqueda
+            </Typography>
+          )}
+        </Box>
+        
+        <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center', gap: 2 }}>
+          <TextField
+            sx={{ width: '50%' }}
+            label="Buscar vinos"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            variant="outlined"
+          />
+        </Box>
+
+        {loading ? (
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" color="text.secondary">
+              Cargando...
+            </Typography>
+          </Box>
+        ) : error ? (
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" color="text.secondary">
+              Error: {error}
+            </Typography>
+          </Box>
+        ) : searchQuery && filterWines(searchQuery).length === 0 ? (
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" color="text.secondary">
+              No se encontraron resultados para "{searchQuery}"
+            </Typography>
+          </Box>
+        ) : currentPage > totalPages ? (
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" color="text.secondary">
+              No hay resultados en esta página
+            </Typography>
+          </Box>
+        ) : wines.length === 0 ? (
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" color="text.secondary">
+              No hay vinos en la colección
+            </Typography>
+          </Box>
+        ) : (
+          <Card>
+            <CardContent>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Nombre</TableCell>
+                      <TableCell>Denominación</TableCell>
+                      <TableCell>Bodega</TableCell>
+                      <TableCell>Año</TableCell>
+                      <TableCell>Varietal</TableCell>
+                      <TableCell>País</TableCell>
+                      <TableCell>Puntuación</TableCell>
+                      <TableCell>Precio</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {currentWines.map((wine) => (
+                      <TableRow key={wine.id}>
+                        <TableCell>{wine.Title}</TableCell>
+                        <TableCell>{wine.County}</TableCell>
+                        <TableCell>{wine.Winery}</TableCell>
+                        <TableCell>{wine.Vintage}</TableCell>
+                        <TableCell>{wine.Variety}</TableCell>
+                        <TableCell>{wine.Country}</TableCell>
+                        <TableCell>{wine.Points}</TableCell>
+                        <TableCell>{wine.Price}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
+        )}
+
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={(_, page) => setCurrentPage(page)}
+            color="primary"
+            size="large"
+          />
+        </Box>
       </Box>
     </ThemeProvider>
   );
-
-  if (error) return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ p: 2, textAlign: 'center' }}>
-        <Typography variant="h6" color="text.secondary">
-          Error: {error}
-        </Typography>
-      </Box>
-    </ThemeProvider>
-  );
-
-  if (searchQuery && filterWines(searchQuery).length === 0 && !loading && !error) {
-    return (
-      <ThemeProvider theme={theme}>
-        <Box sx={{ p: 2, textAlign: 'center' }}>
-          <Typography variant="h6" color="text.secondary">
-            No se encontraron resultados para "{searchQuery}"
-          </Typography>
-        </Box>
-      </ThemeProvider>
-    );
-  }
-
-  if (currentPage > totalPages) {
-    return (
-      <ThemeProvider theme={theme}>
-        <Box sx={{ p: 2, textAlign: 'center' }}>
-          <Typography variant="h6" color="text.secondary">
-            No hay resultados en esta página
-          </Typography>
-        </Box>
-      </ThemeProvider>
-    );
-  }
-
-  // Si no hay vinos, mostramos un mensaje
-  if (wines.length === 0 && !loading && !error) {
-    return (
-      <ThemeProvider theme={theme}>
-        <Box sx={{ p: 2, textAlign: 'center' }}>
-          <Typography variant="h6" color="text.secondary">
-            No hay vinos en la colección
-          </Typography>
-        </Box>
-      </ThemeProvider>
-    );
-  }
 
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ p: 2 }}>
-        <Typography variant="h4" gutterBottom>
-          Mi Colección de Vinos
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Typography variant="h4" gutterBottom>
+            Mi Colección de Vinos
+          </Typography>
+          {searchQuery && (
+            <Typography
+              variant="h6"
+              color="primary"
+              sx={{ cursor: 'pointer' }}
+              onClick={() => setSearchQuery('')}
+            >
+              Limpiar búsqueda
+            </Typography>
+          )}
+        </Box>
         
-        <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+        <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center', gap: 2 }}>
           <TextField
-            fullWidth
+            sx={{ width: '50%' }}
             label="Buscar vinos"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
